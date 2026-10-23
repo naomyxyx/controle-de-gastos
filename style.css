@@ -1,7 +1,9 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
 
-/* CORES E CONFIGURAÇÕES GERAIS */
+/* =========================================
+   1. CORES E CONFIGURAÇÕES GERAIS
+========================================= */
 
 :root {
   color-scheme: dark;
@@ -58,7 +60,9 @@ button:disabled {
   display: none !important;
 }
 
-/* ESTRUTURA PRINCIPAL */
+/* =========================================
+   2. ESTRUTURA PRINCIPAL
+========================================= */
 
 .shell {
   width: min(1180px, 100%);
@@ -126,7 +130,9 @@ h1 {
   background: var(--green);
 }
 
-/* BOTÕES */
+/* =========================================
+   3. BOTÕES
+========================================= */
 
 .button,
 .file-button {
@@ -187,7 +193,41 @@ h1 {
   background: var(--blue-dark);
 }
 
-/* AVISO DE CONFIGURAÇÃO */
+.button-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mini-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card2);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mini-button:hover {
+  background: var(--blue-dark);
+}
+
+.mini-button.danger {
+  border-color: #94514f;
+  color: var(--red);
+}
+
+/* =========================================
+   4. AVISO DE CONFIGURAÇÃO INICIAL
+========================================= */
 
 .setup-banner {
   display: flex;
@@ -213,7 +253,9 @@ h1 {
   font-size: 0.8rem;
 }
 
-/* CARTÕES FINANCEIROS */
+/* =========================================
+   5. CARTÕES FINANCEIROS
+========================================= */
 
 .metrics {
   display: grid;
@@ -260,15 +302,9 @@ h1 {
   color: var(--blue);
 }
 
-/* NAVEGAÇÃO PRINCIPAL */
-
-.button-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+/* =========================================
+   6. NAVEGAÇÃO PRINCIPAL
+========================================= */
 
 .view-tabs {
   display: flex;
@@ -292,13 +328,19 @@ h1 {
   cursor: pointer;
 }
 
+.view-tab:hover {
+  border-color: var(--blue);
+}
+
 .view-tab.active {
   background: var(--blue-dark);
   border-color: var(--blue-dark);
   color: #fff;
 }
 
-/* PAINÉIS */
+/* =========================================
+   7. PAINÉIS
+========================================= */
 
 .panel {
   min-width: 0;
@@ -324,7 +366,19 @@ h1 {
   margin: 0;
 }
 
-/* NAVEGAÇÃO DAS SEMANAS */
+.panel p {
+  line-height: 1.6;
+}
+
+.empty {
+  padding: 18px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* =========================================
+   8. NAVEGAÇÃO DAS SEMANAS
+========================================= */
 
 .periods {
   display: flex;
@@ -388,7 +442,9 @@ h1 {
   color: #fff;
 }
 
-/* INDICADORES SEMANAIS */
+/* =========================================
+   9. INDICADORES SEMANAIS
+========================================= */
 
 .week-summary {
   display: grid;
@@ -420,7 +476,155 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-/* ANÁLISE DETALHADA */
+.week-stat.warn strong {
+  color: var(--red);
+}
+
+.week-stat.good strong {
+  color: var(--green);
+}
+
+/* =========================================
+   10. CONTAS DA SEMANA
+========================================= */
+
+.guidance,
+.suggestion {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card2);
+}
+
+.guidance h3,
+.suggestion h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+}
+
+.guidance ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.week-bill {
+  padding: 9px 0;
+}
+
+.week-bill + .week-bill {
+  border-top: 1px solid var(--line);
+}
+
+.week-bill,
+.inline-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.suggestion {
+  border-color: #527b68;
+}
+
+.suggestion h3 {
+  color: var(--green);
+}
+
+.suggestion p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* =========================================
+   11. LISTA DE CONTAS E FATURAS
+========================================= */
+
+.entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card2);
+}
+
+.entry > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.entry-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.entry-meta {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.entry-amount {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pill.paid {
+  color: var(--green);
+}
+
+.history {
+  margin-top: 25px;
+}
+
+.history h3 {
+  margin-bottom: 14px;
+}
+
+.debt-numbers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.debt-numbers span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.debt-numbers b {
+  color: var(--red);
+  font-size: 20px;
+}
+
+/* =========================================
+   12. ANÁLISE DETALHADA
+========================================= */
 
 #analysisContent {
   display: flex;
@@ -460,6 +664,7 @@ h1 {
   font-size: 13px;
   line-height: 1.7;
   color: #c5d2dd;
+  overflow-wrap: anywhere;
 }
 
 .analysis-row > div:last-child {
@@ -483,10 +688,169 @@ h1 {
 }
 
 .analysis-row.danger > div:last-child strong {
-  color: #ff9999;
+  color: var(--red);
 }
 
-/* RESPONSIVIDADE: TABLETS */
+/* =========================================
+   13. JANELAS E FORMULÁRIOS
+========================================= */
+
+dialog {
+  width: min(520px, calc(100% - 32px));
+  max-width: 520px;
+  max-height: 90vh;
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+dialog::backdrop {
+  background: rgba(5, 10, 16, 0.75);
+  backdrop-filter: blur(3px);
+}
+
+dialog form {
+  padding: 24px;
+}
+
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.modal-head h2 {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.modal-head button {
+  flex: 0 0 auto;
+}
+
+.panel-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field span {
+  display: block;
+}
+
+.field input,
+.field select,
+.field textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card2);
+  color: var(--ink);
+  outline: none;
+}
+
+.field textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(155, 191, 230, 0.15);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted);
+}
+
+.field small,
+.fields small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.field input[type="checkbox"] {
+  width: 17px;
+  min-height: 17px;
+  height: 17px;
+  accent-color: var(--blue-dark);
+}
+
+dialog .button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* =========================================
+   14. NOTIFICAÇÕES
+========================================= */
+
+#toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card2);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+}
+
+#toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* =========================================
+   15. TABLETS
+========================================= */
 
 @media (max-width: 900px) {
   .metrics {
@@ -507,7 +871,9 @@ h1 {
   }
 }
 
-/* RESPONSIVIDADE: CELULARES */
+/* =========================================
+   16. CELULARES
+========================================= */
 
 @media (max-width: 600px) {
   .shell {
@@ -533,81 +899,7 @@ h1 {
     justify-content: flex-start;
   }
 
-  .metrics {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .metric {
-    width: 100%;
-    min-width: 0;
-    padding: 16px;
-  }
-
-  .metric-label {
-    font-size: 13px;
-  }
-
-  .metric-value {
-    font-size: clamp(22px, 6vw, 28px);
-    overflow-wrap: anywhere;
-  }
-
-  .panel {
-    padding: 16px;
-    border-radius: 15px;
-  }
-
-  .view-tabs {
-    gap: 6px;
-  }
-
-  .view-tab {
-    padding: 9px 12px;
-    font-size: 12px;
-  }
-
-  .periods {
-    justify-content: flex-start;
-  }
-
-  .week-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .analysis-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-    padding: 16px;
-  }
-
-  .analysis-row > div:last-child {
-    align-items: flex-start;
-    text-align: left;
-    min-width: 0;
-    padding-top: 12px;
-    border-top: 1px solid #34485a;
-  }
-
-  .setup-banner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .button-row {
-    justify-content: flex-start;
-  }
-}
-
-
-/* =========================================
-   MOBILE - CARDS COMPACTOS E NAVEGAÇÃO
-========================================= */
-
-@media (max-width: 600px) {
-
-  /* Quatro cartões em duas colunas */
+  /* Cartões compactos em duas colunas */
 
   .metrics {
     display: grid;
@@ -617,6 +909,7 @@ h1 {
   }
 
   .metric {
+    width: 100%;
     min-width: 0;
     min-height: 0;
     padding: 12px;
@@ -637,7 +930,7 @@ h1 {
     overflow-wrap: anywhere;
   }
 
-  /* Navegação centralizada, sem cortes */
+  /* Quatro botões em duas linhas */
 
   .view-tabs {
     display: grid;
@@ -661,9 +954,121 @@ h1 {
     border-radius: 999px;
   }
 
+  /* Painéis */
+
+  .panel {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .panel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button-row {
+    justify-content: flex-start;
+  }
+
+  /* Semanas */
+
+  .periods {
+    justify-content: flex-start;
+  }
+
+  .week-summary {
+    grid-template-columns: 1fr;
+  }
+
+  /* Análise detalhada */
+
+  .analysis-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .analysis-row > div:last-child {
+    align-items: flex-start;
+    text-align: left;
+    min-width: 0;
+    padding-top: 12px;
+    border-top: 1px solid #34485a;
+  }
+
+  /* Contas e faturas */
+
+  .entry {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .entry-amount {
+    white-space: normal;
+  }
+
+  .entry-actions {
+    justify-content: flex-start;
+  }
+
+  .week-bill {
+    align-items: flex-start;
+  }
+
+  /* Aviso inicial */
+
+  .setup-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Janelas de configuração */
+
+  dialog {
+    width: calc(100% - 24px);
+    max-width: none;
+    max-height: 85vh;
+    border-radius: 15px;
+  }
+
+  dialog form {
+    padding: 18px;
+  }
+
+  .modal-head h2 {
+    font-size: 20px;
+  }
+
+  .fields {
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  dialog .button-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  dialog .button-row .button {
+    width: 100%;
+  }
+
+  /* Notificações */
+
+  #toast {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    max-width: none;
+  }
 }
 
-/* Celulares muito estreitos */
+/* =========================================
+   17. CELULARES MUITO ESTREITOS
+========================================= */
 
 @media (max-width: 340px) {
   .metric {
@@ -676,5 +1081,9 @@ h1 {
 
   .metric-value {
     font-size: 15px;
+  }
+
+  .view-tab {
+    font-size: 11px;
   }
 }
