@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121a23">
+  <title>Organizador financeiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Seu dinheiro, com clareza</div>
+        <h1>Organizador<br>financeiro</h1>
+        <p class="subtitle">Veja o que entra, o que precisa ser pago e quanto fica dispon�vel em cada semana.</p>
+      </div>
+      <div class="header-actions">
+        <span class="local-badge"><span></span>Salvo neste aparelho</span>
+        <button class="button light" id="backupButton" type="button">Exportar backup</button>
+        <label class="button light file-button">Importar backup<input id="importInput" type="file" accept="application/json,.json"></label>
+      </div>
+    </header>
+
+    <section id="setupBanner" class="setup-banner" hidden>
+      <div><strong>Vamos come�ar?</strong><p>Informe seu saldo e como voc� recebe. Depois, cadastre suas contas.</p></div>
+      <button class="button" id="setupButton" type="button">Configurar agora</button>
+    </section>
+
+    <section id="metrics" class="metrics"></section>
+
+    <nav class="view-tabs" aria-label="Visualiza��es">
+      <button class="view-tab active" data-view="weekly" type="button">Semanas</button>
+      <button class="view-tab" data-view="accounts" type="button">Contas</button>
+      <button class="view-tab" data-view="card" type="button">Fatura</button>
+      <button class="view-tab" data-view="analysis" type="button">An�lise detalhada</button>
+    </nav>
+
+    <section class="panel" id="weekPanel">
+      <div class="panel-head">
+        <div><h2>Planejamento semanal</h2><p class="panel-note">Adicione contas previstas e registre movimenta��es quando acontecerem.</p></div>
+        <div class="button-row">
+          <button id="addWeekBillButton" class="button gold" type="button">+ Adicionar conta</button>
+          <button id="recordButton" class="button" type="button">Lan�ar movimenta��o</button>
+          <button id="editWeekButton" class="button light" type="button">Editar previs�o</button>
+          <button id="analysisButton" class="button light" type="button">An�lise da semana</button>
+        </div>
+      </div>
+      <nav id="weekTabs" class="periods" aria-label="Escolher semana"></nav>
+      <div id="weekDetail"></div>
+    </section>
+
+    <section class="panel" id="accountPanel" hidden>
+      <div class="panel-head">
+        <div><h2>Contas e compromissos</h2><p class="panel-note">Aluguel, parcela do carro, energia, mensalidades e outras contas previstas.</p></div>
+        <button id="addButton" class="button" type="button">+ Adicionar conta</button>
+      </div>
+      <details class="start-guide">
+        <summary>Como come�ar</summary>
+        <ol><li>Adicione cada conta que voc� j� sabe que ter�.</li><li>Escolha o vencimento e a semana em que pretende pagar.</li><li>Marque como paga quando o pagamento realmente acontecer.</li></ol>
+      </details>
+      <div id="entryList" class="list"></div>
+    </section>
+
+    <section class="panel" id="cardPanel" hidden>
+      <div class="panel-head">
+        <div><h2>Fatura do cart�o</h2><p class="panel-note">Cadastre a fatura como conta, planeje pagamentos e registre somente o que j� pagou.</p></div>
+        <div class="button-row"><button id="planCardButton" class="button gold" type="button">Planejar pagamento</button><button id="payCardButton" class="button" type="button">Registrar pagamento</button></div>
+      </div>
+      <div id="cardDebt" class="card-debt"></div>
+      <div id="cardPlans" class="list compact-list"></div>
+    </section>
+
+    <section class="panel" id="analysisPanel" hidden>
+      <div class="panel-head"><div><h2 id="analysisTitle">An�lise detalhada</h2><p class="panel-note">Saldo anterior + entradas - contas - gastos - economia.</p></div></div>
+      <div id="analysisContent"></div>
+    </section>
+
+    <footer>
+      <button id="settingsButton" class="text-button" type="button">Configura��es</button>
+      <span>Os dados ficam somente neste navegador. Fa�a backup regularmente.</span>
+    </footer>
+  </main>
+
+  <dialog id="setupDialog">
+    <form method="dialog" id="setupForm" class="modal-form">
+      <div class="modal-head"><h2>Configura��o inicial</h2><button class="close" value="cancel" aria-label="Fechar">�</button></div>
+      <p class="panel-note">Voc� poder� alterar estes valores depois.</p>
+      <div class="fields">
+        <label class="field"><span>Saldo dispon�vel hoje</span><input id="openingBalance" type="number" step="0.01" min="0" required></label>
+        <label class="field"><span>Recebimento semanal</span><input id="weeklyIncome" type="number" step="0.01" min="0" required></label>
+        <label class="field full"><span>Primeira data de recebimento</span><input id="firstIncomeDate" type="date" required><small>As semanas ser�o criadas a partir desta data.</small></label>
+      </div>
+      <div class="form-actions"><button class="button light" value="cancel" type="button" data-close-dialog="setupDialog">Cancelar</button><button class="button" type="submit">Salvar configura��o</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="accountDialog">
+    <form method="dialog" id="accountForm" class="modal-form">
+      <input id="accountId" type="hidden">
+      <div class="modal-head"><h2 id="accountDialogTitle">Adicionar conta</h2><button class="close" value="cancel" aria-label="Fechar">�</button></div>
+      <div class="fields">
+        <label class="field full"><span>Qual � a conta?</span><input id="accountTitle" required maxlength="100" placeholder="Ex.: Aluguel, parcela do carro ou energia"></label>
+        <label class="field"><span>Valor</span><input id="accountAmount" required type="number" min="0.01" step="0.01"></label>
+        <label class="field"><span>Categoria</span><select id="accountCategory"></select></label>
+        <label class="field"><span>Vencimento</span><input id="accountDue" type="date" required></label>
+        <label class="field"><span>Semana planejada</span><select id="accountWeek" required></select></label>
+        <label class="field full checkbox"><input id="accountRecurring" type="checkbox"><span>Repetir esta conta todos os meses</span></label>
+      </div>
+      <div class="form-actions"><button class="button light" type="button" data-close-dialog="accountDialog">Cancelar</button><button class="button" type="submit">Salvar conta</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="movementDialog">
+    <form method="dialog" id="movementForm" class="modal-form">
+      <div class="modal-head"><h2>Lan�ar movimenta��o</h2><button class="close" value="cancel" aria-label="Fechar">�</button></div>
+      <div class="fields">
+        <label class="field full"><span>O que aconteceu?</span><select id="movementType"><option value="expense">Gasto da semana</option><option value="income">Recebimento extra</option><option value="cardPayment">Pagamento da fatura</option><option value="saving">Dinheiro guardado</option></select></label>
+        <label class="field full"><span>Descri��o</span><input id="movementDescription" required maxlength="100" placeholder="Ex.: Mercado, combust�vel ou pagamento do cart�o"></label>
+        <label class="field"><span>Valor</span><input id="movementAmount" type="number" min="0.01" step="0.01" required></label>
+        <label class="field"><span>Data</span><input id="movementDate" type="date" required></label>
+        <label class="field full"><span>Semana</span><select id="movementWeek" required></select></label>
+      </div>
+      <div class="form-actions"><button class="button light" type="button" data-close-dialog="movementDialog">Cancelar</button><button class="button" type="submit">Salvar movimenta��o</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="weekDialog">
+    <form method="dialog" id="weekForm" class="modal-form">
+      <div class="modal-head"><h2>Editar previs�o da semana</h2><button class="close" value="cancel" aria-label="Fechar">�</button></div>
+      <p id="weekDialogText" class="panel-note"></p>
+      <div class="fields">
+        <label class="field"><span>Recebimento previsto</span><input id="weekIncome" type="number" min="0" step="0.01" required></label>
+        <label class="field"><span>Reserva para gastos livres</span><input id="weekFree" type="number" min="0" step="0.01" required></label>
+      </div>
+      <div class="form-actions"><button class="button light" type="button" data-close-dialog="weekDialog">Cancelar</button><button class="button" type="submit">Salvar previs�o</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="cardPlanDialog">
+    <form method="dialog" id="cardPlanForm" class="modal-form">
+      <div class="modal-head"><h2>Planejar pagamento da fatura</h2><button class="close" value="cancel" aria-label="Fechar">�</button></div>
+      <div class="fields"><label class="field"><span>Valor planejado</span><input id="cardPlanAmount" type="number" min="0.01" step="0.01" required></label><label class="field"><span>Semana</span><select id="cardPlanWeek" required></select></label></div>
+      <div class="form-actions"><button class="button light" type="button" data-close-dialog="cardPlanDialog">Cancelar</button><button class="button" type="submit">Adicionar ao plano</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="script.js"></script>
+</body>
+</html>
+
