@@ -4,9 +4,9 @@
 
   var STORAGE_KEY = 'organizador-financeiro-local-v1';
   var categories = [
-    'Moradia', 'Contas da casa', 'Ve�culo', 'Educa��o',
-    'Sa�de', 'Comunica��o', 'Alimenta��o', 'Transporte',
-    'Parcela', 'Empr�stimo', 'Assinatura', 'Cart�o',
+    'Moradia', 'Contas da casa', 'Veículo', 'Educação',
+    'Saúde', 'Comunicação', 'Alimentação', 'Transporte',
+    'Parcela', 'Empréstimo', 'Assinatura', 'Cartão',
     'Despesa fixa', 'Outros'
   ];
 
@@ -248,7 +248,7 @@
 
   function weekAccounts(start) {
     return state.accounts.filter(function (a) {
-      return a.week === start && a.category !== 'Cart�o';
+      return a.week === start && a.category !== 'Cartão';
     });
   }
 
@@ -338,7 +338,7 @@
   function cardTotal() {
     return state.accounts
       .filter(function (a) {
-        return a.category === 'Cart�o';
+        return a.category === 'Cartão';
       })
       .reduce(function (n, a) {
         return n + Number(a.amount || 0);
@@ -418,8 +418,8 @@
       : Number(state.settings.openingBalance || 0);
 
     document.getElementById('metrics').innerHTML =
-      metric('Recebimentos nas pr�ximas 4 semanas', income, 'income') +
-      metric('Contas nas pr�ximas 4 semanas', bills, 'expense') +
+      metric('Recebimentos nas próximas 4 semanas', income, 'income') +
+      metric('Contas nas próximas 4 semanas', bills, 'expense') +
       metric('Economia guardada', saved, 'income') +
       metric('Saldo projetado', final, 'balance');
   }
@@ -512,7 +512,7 @@
 
     var lines = w.accounts.map(function (a) {
       return '<li class="week-bill">' +
-        '<span>' + esc(a.title) + '  ' + money(a.amount) + '</span>' +
+        '<span>' + esc(a.title) + ' · ' + money(a.amount) + '</span>' +
         '<span class="inline-actions">' +
         '<button class="mini-button" data-edit-account="' + a.id + '">Editar/mover</button>' +
         '<button class="mini-button danger" data-delete-account="' + a.id + '">Excluir</button>' +
@@ -522,7 +522,7 @@
     if (w.plannedCard > 0) {
       lines.push(
         '<li class="week-bill">' +
-        '<span>Pagamento planejado da fatura  ' + money(w.plannedCard) + '</span>' +
+        '<span>Pagamento planejado da fatura · ' + money(w.plannedCard) + '</span>' +
         '<button class="mini-button" data-view-card>Ver fatura</button>' +
         '</li>'
       );
@@ -571,8 +571,8 @@
       '</div>' +
       (suggestion > 0
         ? '<div class="suggestion">' +
-            '<h3>Voc� pode guardar at� ' + money(suggestion) + '</h3>' +
-            '<p>A proje��o mant�m pelo menos R$ 200 nas semanas seguintes.</p>' +
+            '<h3>Você pode guardar até ' + money(suggestion) + '</h3>' +
+            '<p>A projeção mantém pelo menos R$ 200 nas semanas seguintes.</p>' +
           '</div>'
         : '');
 
@@ -605,9 +605,9 @@
           '<div class="entry-title">' + esc(a.title) + '</div>' +
           '<div class="entry-meta">' +
             esc(a.category) +
-            '  Vence ' + formatDate(a.dueDate) +
-            '  Semana ' + esc(weekLabel(a.week)) +
-            (a.recurring ? '  Mensal' : '') +
+            ' · Vence ' + formatDate(a.dueDate) +
+            ' · Semana ' + esc(weekLabel(a.week)) +
+            (a.recurring ? ' · Mensal' : '') +
           '</div>' +
           '<span class="pill ' + (history ? 'paid' : '') + '">' +
             (history ? 'Pago' : 'Pendente') +
@@ -615,7 +615,7 @@
         '</div>' +
         '<div class="entry-amount">' + money(a.amount) + '</div>' +
         '<div class="entry-actions">' +
-          (!history && a.category !== 'Cart�o'
+          (!history && a.category !== 'Cartão'
             ? '<button class="mini-button" data-pay-account="' + a.id + '">Marcar pago</button>'
             : '') +
           (!history
@@ -634,12 +634,12 @@
         : '<div class="empty"><strong>Nenhuma conta cadastrada.</strong>' +
           '<br>Comece por aluguel, energia, parcela do carro ou outra despesa fixa.</div>') +
       '<section class="history">' +
-        '<h3>Hist�rico de contas pagas</h3>' +
+        '<h3>Histórico de contas pagas</h3>' +
         (paid.length
           ? paid.map(function (a) {
               return card(a, true);
             }).join('')
-          : '<div class="empty">Ainda n�o h� pagamentos registrados.</div>') +
+          : '<div class="empty">Ainda não há pagamentos registrados.</div>') +
       '</section>';
 
     bindAccountActions(root);
@@ -693,7 +693,7 @@
             return '<article class="entry">' +
               '<div>' +
                 '<div class="entry-title">Semana ' + esc(weekLabel(p.week)) + '</div>' +
-                '<div class="entry-meta">Previs�o; ainda n�o foi pago</div>' +
+                '<div class="entry-meta">Previsão; ainda não foi pago</div>' +
               '</div>' +
               '<div class="entry-amount">' + money(p.amount) + '</div>' +
               '<div class="entry-actions">' +
@@ -788,8 +788,8 @@
 
     document.getElementById('analysisTitle').textContent =
       analysisScope === 'week'
-        ? 'An�lise da semana'
-        : 'An�lise detalhada';
+        ? 'Análise da semana'
+        : 'Análise detalhada';
 
     root.innerHTML = shown.length
       ? shown.map(function (w) {
@@ -805,15 +805,15 @@
             (w.projected < 0 ? 'danger' : '') + '">' +
             '<div>' +
               '<strong>Semana ' + esc(w.label) + '</strong>' +
-              '<small>Come�a com ' + money(w.opening) +
-                '  recebe ' + money(w.income + w.extra) +
-                '  paga ' + money(w.bills) +
-                '  gastos/economia ' + money(w.spent) +
-                '  reserva livre ' + money(w.free) +
+              '<small>Começa com ' + money(w.opening) +
+                ' · recebe ' + money(w.income + w.extra) +
+                ' · paga ' + money(w.bills) +
+                ' · gastos/economia ' + money(w.spent) +
+                ' · reserva livre ' + money(w.free) +
               '</small>' +
               '<small>' +
                 (bills.length
-                  ? 'Contas: ' + esc(bills.join('  '))
+                  ? 'Contas: ' + esc(bills.join(' · '))
                   : 'Sem contas previstas') +
               '</small>' +
             '</div>' +
@@ -823,7 +823,7 @@
             '</div>' +
           '</article>';
         }).join('')
-      : '<div class="empty">Configure o organizador para visualizar a an�lise.</div>';
+      : '<div class="empty">Configure o organizador para visualizar a análise.</div>';
   }
 
   function selectView(view) {
@@ -946,7 +946,7 @@
       return a.id !== id;
     });
 
-    commit('Conta exclu�da.');
+    commit('Conta excluída.');
   }
 
   function markAccountPaid(id) {
@@ -1041,7 +1041,7 @@
 
     document.getElementById('weekDialogText').textContent =
       'Semana ' + w.label +
-      '. Edite apenas a previs�o; valores que j� aconteceram entram em Lan�ar movimenta��o.';
+      '. Edite apenas a previsão; valores que já aconteceram entram em Lançar movimentação.';
 
     document.getElementById('weekIncome').value = w.income;
     document.getElementById('weekFree').value = w.free;
@@ -1058,7 +1058,7 @@
     };
 
     document.getElementById('weekDialog').close();
-    commit('Previs�o atualizada.');
+    commit('Previsão atualizada.');
   }
 
   function openCardPlan() {
@@ -1083,7 +1083,7 @@
     });
 
     document.getElementById('cardPlanDialog').close();
-    commit('Pagamento inclu�do no planejamento.');
+    commit('Pagamento incluído no planejamento.');
   }
 
   function openSetup() {
@@ -1117,7 +1117,7 @@
     selectedWeek = state.settings.firstIncomeDate;
 
     document.getElementById('setupDialog').close();
-    commit('Configura��o salva.');
+    commit('Configuração salva.');
   }
 
   function exportBackup() {
@@ -1162,7 +1162,7 @@
         render();
         showUndo('Backup importado.');
       } catch (error) {
-        toast('Esse arquivo n�o � um backup v�lido.');
+        toast('Esse arquivo não é um backup válido.');
       }
     };
 
