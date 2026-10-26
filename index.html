@@ -20,7 +20,7 @@
       <div>
         <div class="eyebrow">Seu dinheiro, com clareza</div>
         <h1>Organizador<br>financeiro</h1>
-        <p class="subtitle">Veja o que entra, o que precisa ser pago e quanto fica disponível em cada semana.</p>
+        <p class="subtitle">Veja o que entra, o que precisa ser pago e quanto fica dispon�vel em cada semana.</p>
       </div>
       <div class="header-actions">
         <span class="local-badge"><span></span>Salvo neste aparelho</span>
@@ -32,32 +32,33 @@
 
     <section id="setupBanner" class="setup-banner" hidden>
       <div>
-        <strong>Vamos começar?</strong>
-        <p>Informe seu saldo e como você recebe. Depois, cadastre suas contas.</p>
+        <strong>Vamos come�ar?</strong>
+        <p>Informe seu saldo e como voc� recebe. Depois, cadastre suas contas.</p>
       </div>
       <button class="button" id="setupButton" type="button">Configurar agora</button>
     </section>
 
     <section id="metrics" class="metrics"></section>
 
-    <nav class="view-tabs" aria-label="Visualizações">
+    <nav class="view-tabs" aria-label="Visualiza��es">
       <button class="view-tab active" data-view="weekly" type="button">Semanas</button>
       <button class="view-tab" data-view="accounts" type="button">Contas</button>
       <button class="view-tab" data-view="card" type="button">Fatura</button>
-      <button class="view-tab" data-view="analysis" type="button">Análise detalhada</button>
+      <button class="view-tab" data-view="history" type="button">Histórico</button>
+      <button class="view-tab" data-view="analysis" type="button">An�lise detalhada</button>
     </nav>
 
     <section class="panel" id="weekPanel">
       <div class="panel-head">
         <div>
           <h2>Planejamento semanal</h2>
-          <p class="panel-note">Adicione contas previstas e registre movimentações quando acontecerem.</p>
+          <p class="panel-note">Adicione contas previstas e registre movimenta��es quando acontecerem.</p>
         </div>
         <div class="button-row">
           <button id="addWeekBillButton" class="button gold" type="button">+ Adicionar conta</button>
-          <button id="recordButton" class="button" type="button">Lançar movimentação</button>
-          <button id="editWeekButton" class="button light" type="button">Editar previsão</button>
-          <button id="analysisButton" class="button light" type="button">Análise da semana</button>
+          <button id="recordButton" class="button" type="button">Lan�ar movimenta��o</button>
+          <button id="editWeekButton" class="button light" type="button">Editar previs�o</button>
+          <button id="analysisButton" class="button light" type="button">An�lise da semana</button>
         </div>
       </div>
       <nav id="weekTabs" class="periods" aria-label="Escolher semana"></nav>
@@ -73,9 +74,9 @@
         <button id="addButton" class="button" type="button">+ Adicionar conta</button>
       </div>
       <details class="start-guide">
-        <summary>Como começar</summary>
+        <summary>Como come�ar</summary>
         <ol>
-          <li>Adicione cada conta que você já sabe que terá.</li>
+          <li>Adicione cada conta que voc� j� sabe que ter�.</li>
           <li>Escolha o vencimento e a semana em que pretende pagar.</li>
           <li>Marque como paga quando o pagamento realmente acontecer.</li>
         </ol>
@@ -86,8 +87,8 @@
     <section class="panel" id="cardPanel" hidden>
       <div class="panel-head">
         <div>
-          <h2>Fatura do cartão</h2>
-          <p class="panel-note">Cadastre a fatura como conta, planeje pagamentos e registre somente o que já pagou.</p>
+          <h2>Fatura do cart�o</h2>
+          <p class="panel-note">Cadastre a fatura como conta, planeje pagamentos e registre somente o que j� pagou.</p>
         </div>
         <div class="button-row">
           <button id="planCardButton" class="button gold" type="button">Planejar pagamento</button>
@@ -98,10 +99,20 @@
       <div id="cardPlans" class="list compact-list"></div>
     </section>
 
+    <section class="panel" id="historyPanel" hidden>
+      <div class="panel-head">
+        <div>
+          <h2>Histórico geral</h2>
+          <p class="panel-note">Veja de onde o dinheiro entrou ou saiu e reverta a última alteração quando necessário.</p>
+        </div>
+      </div>
+      <div id="historyContent"></div>
+    </section>
+
     <section class="panel" id="analysisPanel" hidden>
       <div class="panel-head">
         <div>
-          <h2 id="analysisTitle">Análise detalhada</h2>
+          <h2 id="analysisTitle">An�lise detalhada</h2>
           <p class="panel-note">Saldo anterior + entradas - contas - gastos - economia.</p>
         </div>
       </div>
@@ -109,21 +120,21 @@
     </section>
 
     <footer>
-      <button id="settingsButton" class="text-button" type="button">Configurações</button>
-      <span>Os dados ficam somente neste navegador. Faça backup regularmente.</span>
+      <button id="settingsButton" class="text-button" type="button">Configura��es</button>
+      <span>Os dados ficam somente neste navegador. Fa�a backup regularmente.</span>
     </footer>
   </main>
 
   <dialog id="setupDialog">
     <form method="dialog" id="setupForm" class="modal-form">
       <div class="modal-head">
-        <h2>Configuração inicial</h2>
-        <button class="close" value="cancel" aria-label="Fechar">×</button>
+        <h2>Configura��o inicial</h2>
+        <button class="close" value="cancel" aria-label="Fechar">�</button>
       </div>
-      <p class="panel-note">Você poderá alterar estes valores depois.</p>
+      <p class="panel-note">Voc� poder� alterar estes valores depois.</p>
       <div class="fields">
         <label class="field">
-          <span>Saldo disponível hoje</span>
+          <span>Saldo dispon�vel hoje</span>
           <input id="openingBalance" type="number" step="0.01" min="0" required>
         </label>
         <label class="field">
@@ -133,12 +144,12 @@
         <label class="field full">
           <span>Primeira data de recebimento</span>
           <input id="firstIncomeDate" type="date" required>
-          <small>As semanas serão criadas a partir desta data.</small>
+          <small>As semanas ser�o criadas a partir desta data.</small>
         </label>
       </div>
       <div class="form-actions">
         <button class="button light" value="cancel" type="button" data-close-dialog="setupDialog">Cancelar</button>
-        <button class="button" type="submit">Salvar configuração</button>
+        <button class="button" type="submit">Salvar configura��o</button>
       </div>
     </form>
   </dialog>
@@ -148,11 +159,11 @@
       <input id="accountId" type="hidden">
       <div class="modal-head">
         <h2 id="accountDialogTitle">Adicionar conta</h2>
-        <button class="close" value="cancel" aria-label="Fechar">×</button>
+        <button class="close" value="cancel" aria-label="Fechar">�</button>
       </div>
       <div class="fields">
         <label class="field full">
-          <span>Qual é a conta?</span>
+          <span>Qual � a conta?</span>
           <input id="accountTitle" required maxlength="100" placeholder="Ex.: Aluguel, parcela do carro ou energia">
         </label>
         <label class="field">
@@ -185,9 +196,10 @@
 
   <dialog id="movementDialog">
     <form method="dialog" id="movementForm" class="modal-form">
+      <input id="movementId" type="hidden">
       <div class="modal-head">
-        <h2>Lançar movimentação</h2>
-        <button class="close" value="cancel" aria-label="Fechar">×</button>
+        <h2>Lan�ar movimenta��o</h2>
+        <button class="close" value="cancel" aria-label="Fechar">�</button>
       </div>
       <div class="fields">
         <label class="field full">
@@ -200,9 +212,9 @@
           </select>
         </label>
         <label class="field full">
-          <span>Descrição</span>
+          <span>Descri��o</span>
           <input id="movementDescription" required maxlength="100"
-            placeholder="Ex.: Mercado, combustível ou pagamento do cartão">
+            placeholder="Ex.: Mercado, combust�vel ou pagamento do cart�o">
         </label>
         <label class="field">
           <span>Valor</span>
@@ -219,7 +231,7 @@
       </div>
       <div class="form-actions">
         <button class="button light" type="button" data-close-dialog="movementDialog">Cancelar</button>
-        <button class="button" type="submit">Salvar movimentação</button>
+        <button class="button" type="submit">Salvar movimenta��o</button>
       </div>
     </form>
   </dialog>
@@ -227,8 +239,8 @@
   <dialog id="weekDialog">
     <form method="dialog" id="weekForm" class="modal-form">
       <div class="modal-head">
-        <h2>Editar previsão da semana</h2>
-        <button class="close" value="cancel" aria-label="Fechar">×</button>
+        <h2>Editar previs�o da semana</h2>
+        <button class="close" value="cancel" aria-label="Fechar">�</button>
       </div>
       <p id="weekDialogText" class="panel-note"></p>
       <div class="fields">
@@ -243,7 +255,7 @@
       </div>
       <div class="form-actions">
         <button class="button light" type="button" data-close-dialog="weekDialog">Cancelar</button>
-        <button class="button" type="submit">Salvar previsão</button>
+        <button class="button" type="submit">Salvar previs�o</button>
       </div>
     </form>
   </dialog>
@@ -252,7 +264,7 @@
     <form method="dialog" id="cardPlanForm" class="modal-form">
       <div class="modal-head">
         <h2>Planejar pagamento da fatura</h2>
-        <button class="close" value="cancel" aria-label="Fechar">×</button>
+        <button class="close" value="cancel" aria-label="Fechar">�</button>
       </div>
       <div class="fields">
         <label class="field">

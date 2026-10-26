@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
 
 /* =========================================
-   1. CORES E CONFIGURAÇÕES GERAIS
+   1. CORES E CONFIGURA��ES GERAIS
 ========================================= */
 
 :root {
@@ -131,7 +131,7 @@ h1 {
 }
 
 /* =========================================
-   3. BOTÕES
+   3. BOT�ES
 ========================================= */
 
 .button,
@@ -226,7 +226,7 @@ h1 {
 }
 
 /* =========================================
-   4. AVISO DE CONFIGURAÇÃO INICIAL
+   4. AVISO DE CONFIGURA��O INICIAL
 ========================================= */
 
 .setup-banner {
@@ -254,7 +254,7 @@ h1 {
 }
 
 /* =========================================
-   5. CARTÕES FINANCEIROS
+   5. CART�ES FINANCEIROS
 ========================================= */
 
 .metrics {
@@ -303,7 +303,7 @@ h1 {
 }
 
 /* =========================================
-   6. NAVEGAÇÃO PRINCIPAL
+   6. NAVEGA��O PRINCIPAL
 ========================================= */
 
 .view-tabs {
@@ -339,7 +339,7 @@ h1 {
 }
 
 /* =========================================
-   7. PAINÉIS
+   7. PAIN�IS
 ========================================= */
 
 .panel {
@@ -377,7 +377,7 @@ h1 {
 }
 
 /* =========================================
-   8. NAVEGAÇÃO DAS SEMANAS
+   8. NAVEGA��O DAS SEMANAS
 ========================================= */
 
 .periods {
@@ -623,7 +623,7 @@ h1 {
 }
 
 /* =========================================
-   12. ANÁLISE DETALHADA
+   12. AN�LISE DETALHADA
 ========================================= */
 
 #analysisContent {
@@ -692,7 +692,7 @@ h1 {
 }
 
 /* =========================================
-   13. JANELAS E FORMULÁRIOS
+   13. JANELAS E FORMUL�RIOS
 ========================================= */
 
 dialog {
@@ -821,7 +821,7 @@ dialog .button-row {
 }
 
 /* =========================================
-   14. NOTIFICAÇÕES
+   14. NOTIFICA��ES
 ========================================= */
 
 #toast {
@@ -899,7 +899,7 @@ dialog .button-row {
     justify-content: flex-start;
   }
 
-  /* Cartões compactos em duas colunas */
+  /* Cart�es compactos em duas colunas */
 
   .metrics {
     display: grid;
@@ -930,7 +930,7 @@ dialog .button-row {
     overflow-wrap: anywhere;
   }
 
-  /* Quatro botões em duas linhas */
+  /* Quatro bot�es em duas linhas */
 
   .view-tabs {
     display: grid;
@@ -954,7 +954,7 @@ dialog .button-row {
     border-radius: 999px;
   }
 
-  /* Painéis */
+  /* Pain�is */
 
   .panel {
     padding: 16px;
@@ -980,7 +980,7 @@ dialog .button-row {
     grid-template-columns: 1fr;
   }
 
-  /* Análise detalhada */
+  /* An�lise detalhada */
 
   .analysis-row {
     flex-direction: column;
@@ -1025,7 +1025,7 @@ dialog .button-row {
     align-items: flex-start;
   }
 
-  /* Janelas de configuração */
+  /* Janelas de configura��o */
 
   dialog {
     width: calc(100% - 24px);
@@ -1056,7 +1056,7 @@ dialog .button-row {
     width: 100%;
   }
 
-  /* Notificações */
+  /* Notifica��es */
 
   #toast {
     right: 12px;
@@ -1087,3 +1087,18 @@ dialog .button-row {
     font-size: 11px;
   }
 }
+
+
+/* =========================================
+   16. HISTÓRICO E MOVIMENTAÇÕES
+========================================= */
+.movement-history,.activity-history{margin-top:24px}
+.history-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.history-heading h3{margin:0}
+.history-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:13px 14px;border:1px solid var(--line);border-radius:15px;background:var(--card2)}
+.history-row+.history-row{margin-top:9px}
+.history-row.undone{opacity:.5}
+.history-value{font-weight:700;white-space:nowrap}
+.history-value.income{color:var(--green)}
+.history-value.expense{color:var(--red)}
+@media(max-width:600px){.history-row{grid-template-columns:1fr}.history-value{white-space:normal}}

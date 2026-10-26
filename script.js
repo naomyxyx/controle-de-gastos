@@ -4,9 +4,9 @@
 
   var STORAGE_KEY = 'organizador-financeiro-local-v1';
   var categories = [
-    'Moradia', 'Contas da casa', 'Veículo', 'Educação',
-    'Saúde', 'Comunicação', 'Alimentação', 'Transporte',
-    'Parcela', 'Empréstimo', 'Assinatura', 'Cartão',
+    'Moradia', 'Contas da casa', 'Ve�culo', 'Educa��o',
+    'Sa�de', 'Comunica��o', 'Alimenta��o', 'Transporte',
+    'Parcela', 'Empr�stimo', 'Assinatura', 'Cart�o',
     'Despesa fixa', 'Outros'
   ];
 
@@ -19,7 +19,7 @@
 
   function emptyState() {
     return {
-      version: 1,
+      version: 2,
       settings: {
         configured: false,
         openingBalance: 0,
@@ -30,7 +30,8 @@
       weekOverrides: {},
       accounts: [],
       movements: [],
-      cardPlans: []
+      cardPlans: [],
+      history: []
     };
   }
 
@@ -43,6 +44,7 @@
     base.accounts = Array.isArray(value.accounts) ? value.accounts : [];
     base.movements = Array.isArray(value.movements) ? value.movements : [];
     base.cardPlans = Array.isArray(value.cardPlans) ? value.cardPlans : [];
+    base.history = Array.isArray(value.history) ? value.history : [];
 
     return base;
   }
@@ -59,19 +61,61 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function snapshot() {
-    undoState = JSON.stringify(state);
+  function coreState(value) {
+    return {
+      version: 2,
+      settings: value.settings,
+      weekOverrides: value.weekOverrides,
+      accounts: value.accounts,
+      movements: value.movements,
+      cardPlans: value.cardPlans
+    };
   }
 
-  function commit(message) {
+  function snapshot() {
+    undoState = JSON.stringify(coreState(state));
+  }
+
+  function commit(message, details) {
+    if (undoState) {
+      state.history.unshift({
+        id: uid(),
+        createdAt: new Date().toISOString(),
+        action: message,
+        details: details || '',
+        week: selectedWeek || '',
+        before: undoState,
+        undone: false
+      });
+      state.history = state.history.slice(0, 100);
+    }
+
+    undoState = null;
     persist();
     render();
     showUndo(message);
   }
 
-  function undo() {
-    if (!undoState) return;
-    state = normalize(JSON.parse(undoState));
+  function latestUndoable() {
+    return state.history.find(function (item) {
+      return !item.undone && item.before;
+    });
+  }
+
+  function undo(id) {
+    var item = id
+      ? state.history.find(function (entry) { return entry.id === id; })
+      : latestUndoable();
+
+    if (!item || item !== latestUndoable()) {
+      toast('Desfaça primeiro a alteração mais recente.');
+      return;
+    }
+
+    var history = state.history;
+    state = normalize(JSON.parse(item.before));
+    state.history = history;
+    item.undone = true;
     undoState = null;
     persist();
     render();
@@ -204,7 +248,7 @@
 
   function weekAccounts(start) {
     return state.accounts.filter(function (a) {
-      return a.week === start && a.category !== 'Cartão';
+      return a.week === start && a.category !== 'Cart�o';
     });
   }
 
@@ -294,7 +338,7 @@
   function cardTotal() {
     return state.accounts
       .filter(function (a) {
-        return a.category === 'Cartão';
+        return a.category === 'Cart�o';
       })
       .reduce(function (n, a) {
         return n + Number(a.amount || 0);
@@ -341,6 +385,7 @@
     renderWeekTabs(list);
     renderAccounts();
     renderCard();
+    renderHistory();
     renderAnalysis();
     selectView(activeView);
   }
@@ -373,8 +418,8 @@
       : Number(state.settings.openingBalance || 0);
 
     document.getElementById('metrics').innerHTML =
-      metric('Recebimentos nas próximas 4 semanas', income, 'income') +
-      metric('Contas nas próximas 4 semanas', bills, 'expense') +
+      metric('Recebimentos nas pr�ximas 4 semanas', income, 'income') +
+      metric('Contas nas pr�ximas 4 semanas', bills, 'expense') +
       metric('Economia guardada', saved, 'income') +
       metric('Saldo projetado', final, 'balance');
   }
@@ -467,7 +512,7 @@
 
     var lines = w.accounts.map(function (a) {
       return '<li class="week-bill">' +
-        '<span>' + esc(a.title) + ' • ' + money(a.amount) + '</span>' +
+        '<span>' + esc(a.title) + '  ' + money(a.amount) + '</span>' +
         '<span class="inline-actions">' +
         '<button class="mini-button" data-edit-account="' + a.id + '">Editar/mover</button>' +
         '<button class="mini-button danger" data-delete-account="' + a.id + '">Excluir</button>' +
@@ -477,7 +522,7 @@
     if (w.plannedCard > 0) {
       lines.push(
         '<li class="week-bill">' +
-        '<span>Pagamento planejado da fatura • ' + money(w.plannedCard) + '</span>' +
+        '<span>Pagamento planejado da fatura  ' + money(w.plannedCard) + '</span>' +
         '<button class="mini-button" data-view-card>Ver fatura</button>' +
         '</li>'
       );
@@ -526,12 +571,13 @@
       '</div>' +
       (suggestion > 0
         ? '<div class="suggestion">' +
-            '<h3>Você pode guardar até ' + money(suggestion) + '</h3>' +
-            '<p>A projeção mantém pelo menos R$ 200 nas semanas seguintes.</p>' +
+            '<h3>Voc� pode guardar at� ' + money(suggestion) + '</h3>' +
+            '<p>A proje��o mant�m pelo menos R$ 200 nas semanas seguintes.</p>' +
           '</div>'
         : '');
 
     bindAccountActions(document.getElementById('weekDetail'));
+    appendWeekMovements(w);
 
     var cardLink = document.querySelector('[data-view-card]');
 
@@ -559,9 +605,9 @@
           '<div class="entry-title">' + esc(a.title) + '</div>' +
           '<div class="entry-meta">' +
             esc(a.category) +
-            ' • Vence ' + formatDate(a.dueDate) +
-            ' • Semana ' + esc(weekLabel(a.week)) +
-            (a.recurring ? ' • Mensal' : '') +
+            '  Vence ' + formatDate(a.dueDate) +
+            '  Semana ' + esc(weekLabel(a.week)) +
+            (a.recurring ? '  Mensal' : '') +
           '</div>' +
           '<span class="pill ' + (history ? 'paid' : '') + '">' +
             (history ? 'Pago' : 'Pendente') +
@@ -569,7 +615,7 @@
         '</div>' +
         '<div class="entry-amount">' + money(a.amount) + '</div>' +
         '<div class="entry-actions">' +
-          (!history && a.category !== 'Cartão'
+          (!history && a.category !== 'Cart�o'
             ? '<button class="mini-button" data-pay-account="' + a.id + '">Marcar pago</button>'
             : '') +
           (!history
@@ -588,12 +634,12 @@
         : '<div class="empty"><strong>Nenhuma conta cadastrada.</strong>' +
           '<br>Comece por aluguel, energia, parcela do carro ou outra despesa fixa.</div>') +
       '<section class="history">' +
-        '<h3>Histórico de contas pagas</h3>' +
+        '<h3>Hist�rico de contas pagas</h3>' +
         (paid.length
           ? paid.map(function (a) {
               return card(a, true);
             }).join('')
-          : '<div class="empty">Ainda não há pagamentos registrados.</div>') +
+          : '<div class="empty">Ainda n�o h� pagamentos registrados.</div>') +
       '</section>';
 
     bindAccountActions(root);
@@ -647,7 +693,7 @@
             return '<article class="entry">' +
               '<div>' +
                 '<div class="entry-title">Semana ' + esc(weekLabel(p.week)) + '</div>' +
-                '<div class="entry-meta">Previsão; ainda não foi pago</div>' +
+                '<div class="entry-meta">Previs�o; ainda n�o foi pago</div>' +
               '</div>' +
               '<div class="entry-amount">' + money(p.amount) + '</div>' +
               '<div class="entry-actions">' +
@@ -668,6 +714,66 @@
     });
   }
 
+  function movementLabel(type) {
+    return { expense: 'Gasto', income: 'Recebimento extra', cardPayment: 'Pagamento da fatura', saving: 'Dinheiro guardado' }[type] || 'Movimentação';
+  }
+
+  function movementDirection(type) {
+    return type === 'income' ? 'income' : 'expense';
+  }
+
+  function movementCard(movement) {
+    var sign = movement.type === 'income' ? '+' : '−';
+    return '<article class="history-row"><div><div class="entry-title">' + esc(movement.description) + '</div><div class="entry-meta">' + esc(movementLabel(movement.type)) + ' · ' + formatDate(movement.date) + ' · Semana ' + esc(weekLabel(movement.week)) + '</div><div class="entry-actions"><button class="mini-button" data-edit-movement="' + movement.id + '">Editar</button><button class="mini-button danger" data-delete-movement="' + movement.id + '">Excluir</button></div></div><div class="history-value ' + movementDirection(movement.type) + '">' + sign + ' ' + money(movement.amount) + '</div></article>';
+  }
+
+  function appendWeekMovements(w) {
+    var root = document.getElementById('weekDetail');
+    var items = w.movements.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+    var section = document.createElement('section');
+    section.className = 'movement-history';
+    section.innerHTML = '<div class="history-heading"><h3>Movimentações da semana</h3></div>' + (items.length ? items.map(movementCard).join('') : '<div class="empty">Nenhum gasto, entrada ou economia lançado nesta semana.</div>');
+    root.appendChild(section);
+    bindMovementActions(section);
+  }
+
+  function bindMovementActions(root) {
+    root.querySelectorAll('[data-edit-movement]').forEach(function (button) {
+      button.onclick = function () {
+        openMovement(state.movements.find(function (movement) { return movement.id === button.dataset.editMovement; }));
+      };
+    });
+    root.querySelectorAll('[data-delete-movement]').forEach(function (button) {
+      button.onclick = function () { deleteMovement(button.dataset.deleteMovement); };
+    });
+  }
+
+  function deleteMovement(id) {
+    var movement = state.movements.find(function (item) { return item.id === id; });
+    if (!movement || !confirm('Excluir ' + movement.description + '?')) return;
+    snapshot();
+    state.movements = state.movements.filter(function (item) { return item.id !== id; });
+    commit('Movimentação excluída.', movement.description + ' · ' + money(movement.amount));
+  }
+
+  function renderHistory() {
+    var root = document.getElementById('historyContent');
+    var movements = state.movements.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+    var paidAccounts = state.accounts.filter(function (account) { return account.status === 'paid'; }).sort(function (a, b) { return String(b.paidDate).localeCompare(String(a.paidDate)); });
+    var latest = latestUndoable();
+    var records = movements.map(movementCard).join('') + paidAccounts.map(function (account) {
+      return '<article class="history-row"><div><div class="entry-title">' + esc(account.title) + '</div><div class="entry-meta">Conta paga · ' + formatDate(account.paidDate) + ' · Vencimento ' + formatDate(account.dueDate) + '</div></div><div class="history-value expense">− ' + money(account.amount) + '</div></article>';
+    }).join('');
+    var actions = state.history.map(function (item) {
+      return '<article class="history-row ' + (item.undone ? 'undone' : '') + '"><div><div class="entry-title">' + esc(item.action) + '</div><div class="entry-meta">' + new Date(item.createdAt).toLocaleString('pt-BR') + (item.details ? ' · ' + esc(item.details) : '') + (item.undone ? ' · Desfeita' : '') + '</div></div>' + (latest && latest.id === item.id ? '<button class="mini-button" data-undo-history="' + item.id + '">Desfazer</button>' : '') + '</article>';
+    }).join('');
+    root.innerHTML = '<section><div class="history-heading"><h3>Entradas e saídas registradas</h3></div>' + (records || '<div class="empty">Nenhuma movimentação ou conta paga registrada.</div>') + '</section><section class="activity-history"><div class="history-heading"><h3>Alterações realizadas</h3></div>' + (actions || '<div class="empty">As próximas alterações feitas no organizador aparecerão aqui.</div>') + '</section>';
+    bindMovementActions(root);
+    root.querySelectorAll('[data-undo-history]').forEach(function (button) {
+      button.onclick = function () { undo(button.dataset.undoHistory); };
+    });
+  }
+
   function renderAnalysis() {
     var root = document.getElementById('analysisContent');
     var list = weeks();
@@ -682,8 +788,8 @@
 
     document.getElementById('analysisTitle').textContent =
       analysisScope === 'week'
-        ? 'Análise da semana'
-        : 'Análise detalhada';
+        ? 'An�lise da semana'
+        : 'An�lise detalhada';
 
     root.innerHTML = shown.length
       ? shown.map(function (w) {
@@ -699,15 +805,15 @@
             (w.projected < 0 ? 'danger' : '') + '">' +
             '<div>' +
               '<strong>Semana ' + esc(w.label) + '</strong>' +
-              '<small>Começa com ' + money(w.opening) +
-                ' • recebe ' + money(w.income + w.extra) +
-                ' • paga ' + money(w.bills) +
-                ' • gastos/economia ' + money(w.spent) +
-                ' • reserva livre ' + money(w.free) +
+              '<small>Come�a com ' + money(w.opening) +
+                '  recebe ' + money(w.income + w.extra) +
+                '  paga ' + money(w.bills) +
+                '  gastos/economia ' + money(w.spent) +
+                '  reserva livre ' + money(w.free) +
               '</small>' +
               '<small>' +
                 (bills.length
-                  ? 'Contas: ' + esc(bills.join(' • '))
+                  ? 'Contas: ' + esc(bills.join('  '))
                   : 'Sem contas previstas') +
               '</small>' +
             '</div>' +
@@ -717,7 +823,7 @@
             '</div>' +
           '</article>';
         }).join('')
-      : '<div class="empty">Configure o organizador para visualizar a análise.</div>';
+      : '<div class="empty">Configure o organizador para visualizar a an�lise.</div>';
   }
 
   function selectView(view) {
@@ -726,6 +832,7 @@
     document.getElementById('weekPanel').hidden = view !== 'weekly';
     document.getElementById('accountPanel').hidden = view !== 'accounts';
     document.getElementById('cardPanel').hidden = view !== 'card';
+    document.getElementById('historyPanel').hidden = view !== 'history';
     document.getElementById('analysisPanel').hidden = view !== 'analysis';
 
     var highlighted = view === 'analysis' && analysisScope === 'week'
@@ -839,7 +946,7 @@
       return a.id !== id;
     });
 
-    commit('Conta excluída.');
+    commit('Conta exclu�da.');
   }
 
   function markAccountPaid(id) {
@@ -871,38 +978,57 @@
     commit('Pagamento registrado.');
   }
 
-  function openMovement(type) {
+  function openMovement(value) {
     if (!state.settings.configured) {
       openSetup();
       return;
     }
 
-    document.getElementById('movementType').value = type || 'expense';
-    document.getElementById('movementDescription').value =
-      type === 'cardPayment' ? 'Pagamento da fatura' : '';
+    var movement = value && typeof value === 'object' ? value : null;
+    var type = movement ? movement.type : (value || 'expense');
 
-    document.getElementById('movementAmount').value = '';
-    document.getElementById('movementDate').value = isoToday();
+    document.getElementById('movementId').value = movement ? movement.id : '';
+    document.getElementById('movementType').value = type;
+    document.getElementById('movementDescription').value = movement
+      ? movement.description
+      : (type === 'cardPayment' ? 'Pagamento da fatura' : '');
+    document.getElementById('movementAmount').value = movement ? movement.amount : '';
+    document.getElementById('movementDate').value = movement ? movement.date : isoToday();
 
-    fillWeekSelect(document.getElementById('movementWeek'), selectedWeek);
+    fillWeekSelect(document.getElementById('movementWeek'), movement ? movement.week : selectedWeek);
     document.getElementById('movementDialog').showModal();
   }
 
   function saveMovement(event) {
     event.preventDefault();
-    snapshot();
 
-    state.movements.push({
-      id: uid(),
+    var id = document.getElementById('movementId').value;
+    var existing = state.movements.find(function (movement) {
+      return movement.id === id;
+    });
+
+    var movement = {
+      id: id || uid(),
       type: document.getElementById('movementType').value,
       description: document.getElementById('movementDescription').value.trim(),
       amount: Number(document.getElementById('movementAmount').value),
       date: document.getElementById('movementDate').value,
-      week: document.getElementById('movementWeek').value
-    });
+      week: document.getElementById('movementWeek').value,
+      createdAt: existing && existing.createdAt ? existing.createdAt : new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
 
+    snapshot();
+
+    if (existing) {
+      state.movements[state.movements.indexOf(existing)] = movement;
+    } else {
+      state.movements.push(movement);
+    }
+
+    selectedWeek = movement.week;
     document.getElementById('movementDialog').close();
-    commit('Movimentação registrada.');
+    commit(existing ? 'Movimentação atualizada.' : 'Movimentação registrada.', movement.description + ' · ' + money(movement.amount));
   }
 
   function openWeek() {
@@ -915,7 +1041,7 @@
 
     document.getElementById('weekDialogText').textContent =
       'Semana ' + w.label +
-      '. Edite apenas a previsão; valores que já aconteceram entram em Lançar movimentação.';
+      '. Edite apenas a previs�o; valores que j� aconteceram entram em Lan�ar movimenta��o.';
 
     document.getElementById('weekIncome').value = w.income;
     document.getElementById('weekFree').value = w.free;
@@ -932,7 +1058,7 @@
     };
 
     document.getElementById('weekDialog').close();
-    commit('Previsão atualizada.');
+    commit('Previs�o atualizada.');
   }
 
   function openCardPlan() {
@@ -957,7 +1083,7 @@
     });
 
     document.getElementById('cardPlanDialog').close();
-    commit('Pagamento incluído no planejamento.');
+    commit('Pagamento inclu�do no planejamento.');
   }
 
   function openSetup() {
@@ -991,7 +1117,7 @@
     selectedWeek = state.settings.firstIncomeDate;
 
     document.getElementById('setupDialog').close();
-    commit('Configuração salva.');
+    commit('Configura��o salva.');
   }
 
   function exportBackup() {
@@ -1036,7 +1162,7 @@
         render();
         showUndo('Backup importado.');
       } catch (error) {
-        toast('Esse arquivo não é um backup válido.');
+        toast('Esse arquivo n�o � um backup v�lido.');
       }
     };
 
